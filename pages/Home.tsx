@@ -1,3 +1,4 @@
+import { background } from 'native-base/lib/typescript/theme/styled-system';
 import React, { useState, useRef } from 'react';
 import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, Animated, Easing } from 'react-native';
 
@@ -22,7 +23,8 @@ const modules = [
   },
 ];
 
-function Home(): React.JSX.Element {
+
+const Home: React.FC<{navigation: any}> = ({navigation}) => {
   const [activeId, setActiveId] = useState<number | null>(null);
   const animationValues = useRef(modules.map(() => new Animated.Value(0))).current;
 
@@ -91,7 +93,7 @@ function Home(): React.JSX.Element {
         // Interpolate height for smooth expansion
         const cardHeight = animationValues[index].interpolate({
           inputRange: [0, 1],
-          outputRange: [220, 315],
+          outputRange: [230, 320],
         });
 
         // Rotate arrow based on active state
@@ -103,7 +105,7 @@ function Home(): React.JSX.Element {
         return (
           <TouchableOpacity 
             key={module.id} 
-            onPress={() => toggleCard(module.id)} 
+            onPress={() => !isActive ? toggleCard(module.id) : navigation.navigate('Module', {module: `module${module.id}`, title: module.title})} 
             activeOpacity={0.9}
           >
             <Animated.View style={[
@@ -118,14 +120,16 @@ function Home(): React.JSX.Element {
                   </View>
                   <Text style={styles.cardTitle}>{module.title}</Text>
                 </View>
-                <Animated.Image 
-                  source={require('../assets/arrow-up.png')} 
-                  resizeMode='contain' 
-                  style={[
-                    styles.arrowImage,
-                    { transform: [{ rotate: rotateArrow }] }
-                  ]}
-                />
+                <TouchableOpacity onPress={() => { toggleCard(module.id)}}>
+                  <Animated.Image 
+                    source={require('../assets/arrow-up.png')} 
+                    resizeMode='contain' 
+                    style={[
+                      styles.arrowImage,
+                      { transform: [{ rotate: rotateArrow }] }
+                    ]}
+                  />
+                </TouchableOpacity>          
               </View>
               <Image source={module.image} style={styles.cardImage} resizeMode="contain" />
               <Animated.View
@@ -229,8 +233,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5
   },
   arrowImage: {
-    width: 20,
-    height: 10,
+    width: 17,
     alignSelf: 'center',
   },
   row: {

@@ -1,16 +1,27 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HomePage from './pages/Home';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { NativeBaseProvider } from 'native-base';
 import { NavigationContainer } from '@react-navigation/native';
+import { LogBox } from 'react-native';
+
+import Home from './pages/Home';
+import Module from './pages/Module';
+import Module1Tale from './pages/Module1Tale'
+import WellDone from './pages/WellDone'
+
+
+LogBox.ignoreAllLogs(true);
 
 const Stack = createNativeStackNavigator();
 
 const HomeStack = () => {
   return (
     <Stack.Navigator initialRouteName="Home">
-      <Stack.Screen name="Home" component={HomePage} options={{ headerShown: false }} />
+      <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
+      <Stack.Screen name="Module" component={Module} options={{ headerShown: false }} />
+      <Stack.Screen name="Module1Tale" component={Module1Tale} options={{ headerShown: false }} />
+      <Stack.Screen name="WellDone" component={WellDone} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };
