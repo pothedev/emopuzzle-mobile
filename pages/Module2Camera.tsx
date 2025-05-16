@@ -123,7 +123,7 @@ const Module2Camera: React.FC<{navigation:any, route:any}> = ({navigation, route
     ws.onmessage = (msg) => {
       const data = JSON.parse(msg.data);
       if (data.status === 'detected') {
-        console.log('✅ Detected emotion:', data.emotion, data.confidence);
+        console.log('Detected emotion:', data.emotion, data.confidence);
         setAnswerState('correct')
       }
     };
