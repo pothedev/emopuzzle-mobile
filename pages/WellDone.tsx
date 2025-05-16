@@ -3,15 +3,17 @@ import { StyleSheet, View, Text, Image, TouchableOpacity  } from "react-native";
 import { TouchEventType } from "react-native-gesture-handler/lib/typescript/TouchEventType";
 
 const WellDone: React.FC<{navigation: any; route:any}> = ({navigation, route}) => {
+  const {moduleIndex, moduleTitle} = route.params
+
   return (
     <View style={styles.wrapper}>
       <View style={{flex: 1, alignItems: 'center'}}>
         <Image source={require('../assets/galya.png')} resizeMode='contain' style={{width: '50%'}} alt="galya"></Image>
         <Text style={styles.gj}>Great job! You did well with the task</Text>
-        <Text style={styles.finished}>First module is finished</Text>
+        <Text style={styles.finished}>Module {moduleIndex.replace('module', '')} is finished </Text>
       </View>
       <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-        <TouchableOpacity onPress={() => {navigation.navigate('Module', {module: `module1`, title: "Reading with visualisation"})}}>
+        <TouchableOpacity onPress={() => {navigation.navigate('Module', {module: moduleIndex, title: moduleTitle})}}>
           <View style={styles.button}>
             <Text>Continue</Text>
           </View>
@@ -24,16 +26,17 @@ const WellDone: React.FC<{navigation: any; route:any}> = ({navigation, route}) =
 const styles = StyleSheet.create({
   wrapper: {
     paddingHorizontal: 20,
-    paddingTop: 50,
+    paddingTop: 60,
     paddingBottom: 60,
-    height: '100%'
+    height: '100%',
+    backgroundColor: '#fff'
   },
   gj: {
     width: 250,
     fontWeight: 500,
     fontSize: 22,
     textAlign: 'center',
-    marginTop: 10,
+    marginTop: 5,
     marginBottom: 20
   },
   finished: {

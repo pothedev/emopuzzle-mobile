@@ -3,17 +3,21 @@ import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity, Dimensions
 
 const { width: screenWidth } = Dimensions.get('window');
 
-const options = [
+const dummyOptions = [
   { label: 'Worry', isCorrect: false },
   { label: 'Anger', isCorrect: false },
   { label: 'Sadness', isCorrect: true },
   { label: 'Confusion', isCorrect: false },
 ];
 
+const dummyQuestion = 'Що відчував Міло, коли не знайшов свою червону шапочку?'
+
 const dummyText =
   "Milo, the little fox cub, woke up to a cool breeze drifting through his burrow. He yawned, stretched, and reached for his favorite red cap—but it wasn’t on the shelf. Milo blinked and looked again. Still nothing. He sniffed the corners of the burrow, peeked under his leaf bed, and even checked his toy chest. Empty. He walked outside, dragging his paws on the ground, and sat by a big rock. His ears drooped, and his tail curled around him. Milo stared silently at the grass.";
 
 const mistakeDummy = 'Milo felt happy because he finally found his favorite red cap after looking for it everywhere! Bella helped him search all over the forest, and just when they were about to give up, she spotted it high up in a tree. When Milo saw it, his eyes got big with excitement, and he jumped for joy as he pulled it down. This shows he was really happy and full of excitement. When we find something we love and thought was gone, it can make us feel super happy—just like Milo!'
+
+const dummyImage = '../assets/dummyIllustration.png'
 
 
 const MistakePanel: React.FC<{mistakeText: string; setShowMistakePanel: any}> = ({mistakeText, setShowMistakePanel}) => {
@@ -41,17 +45,18 @@ const Module1Tale: React.FC<{ navigation: any; route: any }> = ({
   navigation,
   route,
 }) => {
-  const { storyIndex, storyTitle } = route.params;
+  const { storyIndex, storyTitle, moduleIndex, moduleTitle } = route.params;
 
-  const [storyText, setStoryText] = useState<String>('');
-  const [imageUri, setImageUri] = useState<String>('');
-  const [mistakeText, setMistakeText] = useState<String>('')
+  const [storyText, setStoryText] = useState<string>(dummyText);
+  const [imageUri, setImageUri] = useState<string>(dummyImage);
+  const [questionText, setQuestionText] = useState<string>(dummyQuestion);
+  const [mistakeText, setMistakeText] = useState<string>(dummyQuestion)
+  const [options, setOptions] = useState<Object[]>(dummyOptions)
   
   const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
   const [paragraphIndex, setParagraphIndex] = useState<number>(1)
 
-  const [loadedText, setLoadedText] = useState<boolean>(false)
-  const [loadedImage, setLoadedImage] = useState<boolean>(false)
+  const [loaded, setLoaded] = useState<boolean>(false)
 
   const [selected, setSelected] = useState<string | null>(null);
   const [choseWrong, setChoseWrong] = useState<boolean>(false)
@@ -59,54 +64,69 @@ const Module1Tale: React.FC<{ navigation: any; route: any }> = ({
 
   const [showMistakePanel, setShowMistakePanel] = useState<boolean>(false)
 
+  const [imageSource, setImageSource] = useState<any>(require('../assets/dummyIllustration.png'));
+
+
   const scrollRef = useRef<ScrollView>(null);
 
   useEffect(() => {
 
     const fetchText = async () => {
       try {
-        // const response = await fetch(`https://your-api.com/stories/${storyIndex}&${paragraphIndex}/text`);
-        // const data = await response.text();
-        const data = dummyText;
-        setStoryText(data);
+      //   const response = await fetch(`https://back-end-hazel-six.vercel.app/novel/create_novel`);
+      //   const data = await response.json();
+      //   const text = data.text
+      //   console.log('data', data)
+      //   console.log('text', text)
+      //   const image = data.image
+      //   const question = data.question
+      //   const answers = data.answers
+      //   const explanation = data.explanation
+
+      //   const options = [
+      //     {
+      //       label: answers[0],
+      //       isCorrect: true
+      //     },
+      //     {
+      //       label: answers[1],
+      //       isCorrect: false
+      //     },
+      //     {
+      //       label: answers[2],
+      //       isCorrect: false
+      //     },
+      //     {
+      //       label: answers[3],
+      //       isCorrect: false
+      //     },
+      //   ]
+      //  const shuffled = [...options].sort(() => Math.random() - 0.5);
+
+
+      //   setStoryText(text)
+      //   setImageUri(image)
+      //   setImageSource({ uri: image });
+      //   setQuestionText(question)
+      //   setMistakeText(explanation)
+      //   setOptions(shuffled)
+        
+        setStoryText(dummyText);
         setMistakeText(mistakeDummy)
-        setLoadedText(true);
+        setOptions(dummyOptions)
+        setQuestionText(dummyQuestion)
+        setImageUri(dummyImage)
+        setLoaded(true);
       } catch (error) {
         console.error('Error fetching story text:', error);
       }
     };
-
-    const fetchImage = async () => {
-      try {
-        const imageUrl = require('../assets/dummyIllustration.png');
-        setImageUri(imageUrl);
-
-        // Dynamically get image dimensions
-        Image.getSize(
-          Image.resolveAssetSource(imageUrl).uri,
-          (originalWidth, originalHeight) => {
-            const ratio = screenWidth / originalWidth;
-            setImageDimensions({
-              width: screenWidth-40,
-              height: originalHeight * ratio,
-            });
-          },
-          (error) => console.error('Failed to get image size', error)
-        );
-        setLoadedImage(true)
-      } catch (error) {
-        console.error('Error fetching image:', error);
-      }
-    };
-
     fetchText();
-    fetchImage();
   }, [storyIndex, paragraphIndex]);
 
 
   function handleNextParagraph(){
-    setLoadedImage(false)
-    setLoadedText(false)
+    setLoaded(false)
     setChoseRight(false)
     setChoseWrong(false)
     setSelected(null)
@@ -115,11 +135,11 @@ const Module1Tale: React.FC<{ navigation: any; route: any }> = ({
   }
 
    function handleLastParagraph(){
-    navigation.navigate('WellDone')
+    navigation.navigate('WellDone', {moduleIndex: moduleIndex, moduleTitle: moduleTitle})
   }
 
 
-  if (!loadedImage || !loadedText){
+  if (!loaded){
     return (
       <View>
         <Text>Loading..</Text>
@@ -160,21 +180,24 @@ const Module1Tale: React.FC<{ navigation: any; route: any }> = ({
           {imageUri && (
             <View style={{width: '100%'}}>
               <Image
-              source={imageUri}
-              style={{
-                width: imageDimensions.width,
-                height: imageDimensions.height,
-                borderBottomLeftRadius: 12,
-                borderBottomRightRadius: 12,
-                marginBottom: 40,
-              }}
-              resizeMode="cover"
-            />
+                source={imageSource}
+                style={{
+                  width: '100%',
+                  aspectRatio: 1,
+                  borderBottomLeftRadius: 12,
+                  borderBottomRightRadius: 12,
+                  marginBottom: 40,
+                }}
+                resizeMode="cover"
+              />
+
             </View>
           )}
 
+
+
           <Text style={styles.question}>
-            Question: What did Milo feel when he couldn't find his red cap?
+            {questionText}
           </Text>
 
           <View style={styles.optionsContainer}>
@@ -228,7 +251,7 @@ const Module1Tale: React.FC<{ navigation: any; route: any }> = ({
 
         {/* Panels */}
         {showMistakePanel && (
-          <MistakePanel mistakeText={mistakeDummy} setShowMistakePanel={setShowMistakePanel}></MistakePanel>
+          <MistakePanel mistakeText={mistakeText} setShowMistakePanel={setShowMistakePanel}></MistakePanel>
         )}
       </View>
     );
@@ -321,13 +344,13 @@ const styles = StyleSheet.create({
   },
   mistakePanel: {
     width: screenWidth*0.8,
-    paddingHorizontal: 16,
+    paddingHorizontal: 18,
     paddingTop: 34,
-    paddingBottom: 20,
+    paddingBottom: 22,
     backgroundColor: '#fff',
     position: 'absolute',
     left: '50%',
-    transform: [{ translateX: -screenWidth*0.4 }], // half of panel width,
+    transform: [{ translateX: -screenWidth*0.4 }], 
     top: '15%',
     zIndex: 2,
     borderRadius: 15,

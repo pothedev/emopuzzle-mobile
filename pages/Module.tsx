@@ -23,6 +23,13 @@ const modules = {
   ],
 };
 
+
+const pages = {
+  'module1': 'Module1Tale',
+  'module2': 'Module2Camera',
+  'module3': 'Module3Novel'
+}
+
 const Module: React.FC<{navigation: any; route: any}> = ({navigation, route}) => {
   const { module, title } = route.params as { module: keyof typeof modules; title: string };
 
@@ -55,7 +62,7 @@ const Module: React.FC<{navigation: any; route: any}> = ({navigation, route}) =>
       </View>
 
       {lessons.map((lesson) => (
-        <TouchableOpacity key={lesson.id} style={styles.lessonRow} onPress={() => {navigation.navigate('Module1Tale', {storyIndex: lesson.id, storyTitle: lesson.name})}}>
+        <TouchableOpacity key={lesson.id} style={styles.lessonRow} onPress={() => {navigation.navigate(pages[module], {storyIndex: lesson.id, storyTitle: lesson.name, moduleIndex: module, moduleTitle: title})}}>
           <View style={styles.lessonNumber}>
             <Text style={styles.lessonNumberText}>{lesson.id}</Text>
           </View>
