@@ -11,6 +11,8 @@ const dummyOptions = [
   { label: 'Confusion', isCorrect: false },
 ];
 
+ 
+
 const dummyQuestion = 'Що відчував Міло, коли не знайшов свою червону шапочку?'
 
 const dummyText =
@@ -74,49 +76,49 @@ const Module1Tale: React.FC<{ navigation: any; route: any }> = ({
 
     const fetchText = async () => {
       try {
-        const response = await fetch(`https://back-end-hazel-six.vercel.app/novel/create_novel`);
-        const data = await response.json();
-        const text = data.text
-        console.log('data', data)
-        console.log('text', text)
-        const image = data.image
-        const question = data.question
-        const answers = data.answers
-        const explanation = data.explanation
+      //   const response = await fetch(`https://back-end-hazel-six.vercel.app/novel/create_novel`);
+      //   const data = await response.json();
+      //   const text = data.text
+      //   console.log('data', data)
+      //   console.log('text', text)
+      //   const image = data.image
+      //   const question = data.question
+      //   const answers = data.answers
+      //   const explanation = data.explanation
 
-        const options = [
-          {
-            label: answers[0],
-            isCorrect: true
-          },
-          {
-            label: answers[1],
-            isCorrect: false
-          },
-          {
-            label: answers[2],
-            isCorrect: false
-          },
-          {
-            label: answers[3],
-            isCorrect: false
-          },
-        ]
-       const shuffled = [...options].sort(() => Math.random() - 0.5);
+      //   const options = [
+      //     {
+      //       label: answers[0],
+      //       isCorrect: true
+      //     },
+      //     {
+      //       label: answers[1],
+      //       isCorrect: false
+      //     },
+      //     {
+      //       label: answers[2],
+      //       isCorrect: false
+      //     },
+      //     {
+      //       label: answers[3],
+      //       isCorrect: false
+      //     },
+      //   ]
+      //  const shuffled = [...options].sort(() => Math.random() - 0.5);
 
 
-        setStoryText(text)
-        setImageUri(image)
-        setImageSource({ uri: image });
-        setQuestionText(question)
-        setMistakeText(explanation)
-        setOptions(shuffled)
+      //   setStoryText(text)
+      //   setImageUri(image)
+      //   setImageSource({ uri: image });
+      //   setQuestionText(question)
+      //   setMistakeText(explanation)
+      //   setOptions(shuffled)
         
-        // setStoryText(dummyText);
-        // setMistakeText(mistakeDummy)
-        // setOptions(dummyOptions)
-        // setQuestionText(dummyQuestion)
-        // setImageUri(dummyImage)
+        setStoryText(dummyText);
+        setMistakeText(mistakeDummy)
+        setOptions(dummyOptions)
+        setQuestionText(dummyQuestion)
+        setImageUri(dummyImage)
         
         setLoaded(true);
       } catch (error) {
@@ -219,7 +221,7 @@ const Module1Tale: React.FC<{ navigation: any; route: any }> = ({
               return (
                 <TouchableOpacity
                   key={option.label}
-                  style={buttonStyle}
+                  style={styles.buttonStyle1}
                   disabled={choseRight}
                   onPress={() => {
                     if (option.isCorrect) {
@@ -230,8 +232,15 @@ const Module1Tale: React.FC<{ navigation: any; route: any }> = ({
                     }
                   }}
                 >
-                  <Text style={styles.optionText}>{option.label}</Text>
-                </TouchableOpacity>
+                  <FastImage
+                    source={require('../assets/beeAnim.gif')}
+                    style={styles.optionGif}
+                    resizeMode={FastImage.resizeMode.contain}
+                  />
+                  <View style={buttonStyle}>
+                    <Text style={styles.optionText}>{option.label}</Text>
+                  </View>
+                </TouchableOpacity> 
               );
             })}
           </View>
@@ -311,11 +320,17 @@ const styles = StyleSheet.create({
     marginBottom: 25,
   },
   optionButton: {
-    width: '48%',
+    width: '100%',
     backgroundColor: '#D9D9D9',
     borderRadius: 10,
     paddingVertical: 12,
     alignItems: 'center',
+  },
+  buttonStyle1: {
+    width: '48%',
+    borderRadius: 10,
+    alignItems: 'center',
+    //backgroundColor: 'orange'
   },
   optionText: {
     fontSize: 16,
@@ -375,6 +390,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  optionGif: {
+    width: 80,
+    height: 80,
+    position: "relative",
+    left: 30
+  }
 });
 
 export default Module1Tale;
