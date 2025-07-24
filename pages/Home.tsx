@@ -28,7 +28,7 @@ const handleModulePress = (moduleId: number, navigation: any) => {
     navigation.navigate("Module1Tale", {storyIndex: 1, storyTitle: "Reading with visualisation", moduleIndex: 1, moduleTitle: "Reading with visualisation"})
   }
   if (moduleId === 2){
-    navigation.navigate("Module2Tale", {storyIndex: 1, storyTitle: "Expression of emotions", moduleIndex: 2, moduleTitle: "Expression of emotions"})
+    navigation.navigate("Module2Camera", {storyIndex: 1, storyTitle: "Expression of emotions", moduleIndex: 2, moduleTitle: "Expression of emotions"})
   }
 }
 

@@ -5,11 +5,44 @@ import FastImage from 'react-native-fast-image';
 const { width: screenWidth } = Dimensions.get('window');
 
 const dummyOptions = [
-  { label: 'Worry', isCorrect: false },
-  { label: 'Anger', isCorrect: false },
-  { label: 'Sadness', isCorrect: true },
-  { label: 'Confusion', isCorrect: false },
+  { label: 'joy', isCorrect: false },
+  { label: 'sadness', isCorrect: false },
+  { label: 'anger', isCorrect: true },
+  { label: 'surprise', isCorrect: false },
 ];
+
+const emotionGifs = {
+  joy: [
+    require('../assets/gif/gal_joy.gif'),
+    require('../assets/gif/mil_joy.gif'),
+    require('../assets/gif/iv_joy.gif'),
+    require('../assets/gif/kov_joy.gif'),
+  ],
+  sadness: [
+    require('../assets/gif/gal_sadness.gif'),
+    require('../assets/gif/mil_sadness.gif'),
+    require('../assets/gif/iv_sadness.gif'),
+    require('../assets/gif/kov_sadness.gif'),
+  ],
+  anger: [
+    require('../assets/gif/gal_anger.gif'),
+    require('../assets/gif/mil_anger.gif'),
+    require('../assets/gif/iv_anger.gif'),
+    require('../assets/gif/kov_anger.gif'),
+  ],
+  surprise: [
+    require('../assets/gif/gal_surprise.gif'),
+    require('../assets/gif/mil_surprise.gif'),
+    require('../assets/gif/iv_surprise.gif'),
+    require('../assets/gif/kov_surprise.gif'),
+  ],
+  shame: [
+    require('../assets/gif/gal_shame.gif'),
+    require('../assets/gif/mil_shame.gif'),
+    require('../assets/gif/iv_shame.gif'),
+    require('../assets/gif/kov_shame.gif'),
+  ],
+};
 
  
 
@@ -72,53 +105,71 @@ const Module1Tale: React.FC<{ navigation: any; route: any }> = ({
 
   const scrollRef = useRef<ScrollView>(null);
 
+  const [gifIndexes, setGifIndexes] = useState<{ [key: string]: number }>({});
+
+  // useEffect(() => {
+  //   if (!options) return
+  //   const randomIndexes: { [key: string]: number } = {};
+  //   options.forEach(option => {
+  //     randomIndexes[option.label] = Math.floor(Math.random() * 4);
+  //   });
+  //   setGifIndexes(randomIndexes);
+  // }, [storyIndex, paragraphIndex]);
+
+
   useEffect(() => {
 
     const fetchText = async () => {
       try {
-      //   const response = await fetch(`https://back-end-hazel-six.vercel.app/novel/create_novel`);
-      //   const data = await response.json();
-      //   const text = data.text
-      //   console.log('data', data)
-      //   console.log('text', text)
-      //   const image = data.image
-      //   const question = data.question
-      //   const answers = data.answers
-      //   const explanation = data.explanation
+        const response = await fetch(`https://back-end-hazel-six.vercel.app/novel/create_novel`);
+        const data = await response.json();
+        const text = data.text
+        console.log('data', data)
+        console.log('text', text)
+        const image = data.image
+        const question = data.question
+        const answers = data.answers
+        const explanation = data.explanation
 
-      //   const options = [
-      //     {
-      //       label: answers[0],
-      //       isCorrect: true
-      //     },
-      //     {
-      //       label: answers[1],
-      //       isCorrect: false
-      //     },
-      //     {
-      //       label: answers[2],
-      //       isCorrect: false
-      //     },
-      //     {
-      //       label: answers[3],
-      //       isCorrect: false
-      //     },
-      //   ]
-      //  const shuffled = [...options].sort(() => Math.random() - 0.5);
+        const options = [
+          {
+            label: answers[0],
+            isCorrect: true
+          },
+          {
+            label: answers[1],
+            isCorrect: false
+          },
+          {
+            label: answers[2],
+            isCorrect: false
+          },
+          {
+            label: answers[3],
+            isCorrect: false
+          },
+        ]
+       const shuffled = [...options].sort(() => Math.random() - 0.5);
+
+       const randomIndexes: { [key: string]: number } = {};
+        shuffled.forEach(option => {
+          randomIndexes[option.label] = Math.floor(Math.random() * 4);
+        });
+        setGifIndexes(randomIndexes);
 
 
-      //   setStoryText(text)
-      //   setImageUri(image)
-      //   setImageSource({ uri: image });
-      //   setQuestionText(question)
-      //   setMistakeText(explanation)
-      //   setOptions(shuffled)
+        setStoryText(text)
+        setImageUri(image)
+        setImageSource({ uri: image });
+        setQuestionText(question)
+        setMistakeText(explanation)
+        setOptions(shuffled)
         
-        setStoryText(dummyText);
-        setMistakeText(mistakeDummy)
-        setOptions(dummyOptions)
-        setQuestionText(dummyQuestion)
-        setImageUri(dummyImage)
+        // setStoryText(dummyText);
+        // setMistakeText(mistakeDummy)
+        // setOptions(dummyOptions)
+        // setQuestionText(dummyQuestion)
+        // setImageUri(dummyImage)
         
         setLoaded(true);
       } catch (error) {
@@ -217,6 +268,7 @@ const Module1Tale: React.FC<{ navigation: any; route: any }> = ({
               let buttonStyle = styles.optionButton;
               if (isCorrect) buttonStyle = [styles.optionButton, { backgroundColor: '#83DA40' }];
               else if (isPressed) buttonStyle = [styles.optionButton, { backgroundColor: '#E85E40' }];
+              const randomElement = gifIndexes[option.label];
 
               return (
                 <TouchableOpacity
@@ -232,11 +284,13 @@ const Module1Tale: React.FC<{ navigation: any; route: any }> = ({
                     }
                   }}
                 >
-                  <FastImage
-                    source={require('../assets/beeAnim.gif')}
-                    style={styles.optionGif}
-                    resizeMode={FastImage.resizeMode.contain}
-                  />
+                  <View style={{height: 120, overflow: "hidden"}}>
+                    <FastImage
+                      source={emotionGifs[option.label][randomElement || 1]}
+                      style={styles.optionGif}
+                      resizeMode={FastImage.resizeMode.contain}
+                    />
+                  </View>
                   <View style={buttonStyle}>
                     <Text style={styles.optionText}>{option.label}</Text>
                   </View>
@@ -330,7 +384,8 @@ const styles = StyleSheet.create({
     width: '48%',
     borderRadius: 10,
     alignItems: 'center',
-    //backgroundColor: 'orange'
+    //backgroundColor: 'orange',
+    overflow: 'hidden',
   },
   optionText: {
     fontSize: 16,
@@ -391,10 +446,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   optionGif: {
-    width: 80,
-    height: 80,
+    width: 300,
+    height: 300,
     position: "relative",
-    left: 30
+    left: 30,
+    bottom: "60%"
   }
 });
 
